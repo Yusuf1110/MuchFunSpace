@@ -1,8 +1,8 @@
 <template>
-  <div class='light-view' :class="{'light-on':state.switchActive,'light-off':!state.switchActive}">
+  <div class='light-view' :class="{'enter-move-light':props.switchState}">
     <div class="light-switch">
       <div class="switch-button-container">
-        <div class="switch-button" :class="{'switch-button-on':state.switchActive}" @click="switchClick()">
+        <div class="switch-button" :class="{'switch-button-on':props.switchState}" @click="$emit('switchActive')">
           <div class="switch-light">
           </div>
         </div>
@@ -20,52 +20,18 @@
         <div class="light-bulb-content-redius"></div>
         <div class="light-bulb-content-redius light-bulb-content-redius-right"></div>
       </div>
-      <p class="space-name">WELCOME TO MUCHFUN SPEACE</p>
     </div>
+    <p class="space-name">WELCOME TO MUCHFUN SPEACE</p>
   </div>
 </template>
 <script setup>
-import { reactive } from 'vue';
-
-const state = reactive({
-  switchActive: false,
+import { defineProps } from 'vue';
+const props = defineProps({
+  switchState: Boolean
 })
-function switchClick() {
-  state.switchActive = !state.switchActive
-}
+
 </script>
 <style lang='scss'>
-.light-off {
-  --light-bulb: #000;
-  --light-background: #000;
-  --light-bulb-root: #000;
-  --light-bulge-color: #00000000;
-  --space-name-shadow: 0 0px 10px rgb(0, 0, 0);
-  --switch-container-color: #ffffff4d;
-  --switch-button-color: #ffffff1f;
-  --switch-button-container-color: #8a8a8a30;
-}
-
-.light-on {
-  --light-bulb: #ffffff;
-  --light-background: #3f3f3f;
-  --light-bulb-root: #D9D9D9;
-  --light-bulge-color: #00000040;
-  --space-name-shadow: 0 10px 10px rgb(0, 0, 0);
-  --switch-container-color: #fff;
-  --switch-button-color: #fff;
-  --switch-button-container-color: #8a8a8a99;
-}
-
-.light-view {
-  height: 100%;
-  width: 100%;
-  background-color: var(--light-background);
-  position: relative;
-  transition: all 0.5s ease-out;
-}
-
-
 .light-switch {
   transition: all 0.5s;
   position: absolute;
@@ -125,9 +91,10 @@ function switchClick() {
 }
 
 .light-bulb-container {
+  z-index: 1;
   position: absolute;
   width: 500px;
-  top: 0;
+  top: -284vh;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -138,7 +105,7 @@ function switchClick() {
     transition: all 0.5s ease-out;
     background-color: var(--light-bulb-root);
     width: 12px;
-    height: 120px;
+    height: 300vh;
     box-shadow: inset 8px 0px 4px var(--light-bulge-color);
   }
 
@@ -152,9 +119,9 @@ function switchClick() {
       content: '';
       position: absolute;
       transition: all 0.5s ease-out;
-      bottom: -50px;
-      width: 300px;
-      height: 300px;
+      bottom: 10px;
+      width: 200px;
+      height: 200px;
       border-radius: 50%;
       filter: blur(90px);
       background-color: var(--light-bulb);
@@ -210,14 +177,92 @@ function switchClick() {
     }
   }
 
+}
+
+.space-name {
+  transition: all 1s;
+  position: absolute;
+  top: 500px;
+  left: 50%;
+  color: var(--space-name-color);
+  transform: translateX(-50%);
+  font-size: 56px;
+  line-height: 60px;
+  font-weight: 500;
+  text-shadow: var(--space-name-shadow);
+}
+
+//Here is the enter move animations
+.enter-move-light {
+
+  .light-switch {
+    animation-name: switch-move;
+  }
+
+  .light-bulb-container {
+    animation-name: light-bulb-move;
+  }
+
+  .light-bulb::after {
+    animation-name: bulb-light-move;
+  }
+
   .space-name {
-    transition: all 1s;
-    margin-top: 96px;
-    text-align: center;
-    font-size: 48px;
-    line-height: 60px;
-    font-weight: 500;
-    text-shadow: var(--space-name-shadow);
+    animation-name: space-name-move;
+  }
+
+  .light-switch,
+  .light-bulb-container,
+  .space-name,
+  .light-bulb::after {
+    animation-delay: 2s;
+    animation-duration: 3s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+  }
+
+  @keyframes switch-move {
+    50% {
+      transform: scale(30%) translate(40px, 10vh);
+    }
+
+    100% {
+      transform: scale(30%) translate(40px, -140vh);
+    }
+  }
+
+  @keyframes light-bulb-move {
+    50% {
+      transform: scale(30%) translateY(400vh);
+      left: 5vw
+    }
+
+    100% {
+      transform: scale(30%) translateY(275vh);
+      left: 5vw
+    }
+  }
+
+  @keyframes space-name-move {
+    50% {
+      opacity: 100%;
+      text-shadow: none;
+    }
+
+    100% {
+      opacity: 0%;
+      text-shadow: none
+    }
+  }
+
+  @keyframes bulb-light-move {
+    50% {
+      opacity: 0%;
+    }
+
+    100% {
+      opacity: 0%;
+    }
   }
 }
 </style>
